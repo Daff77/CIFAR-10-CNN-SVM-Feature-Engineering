@@ -1,20 +1,17 @@
-# 🚀 Tugas 7: Peningkatan Akurasi CNN + SVM pada CIFAR-10 (18 Files Exact Structure)
+# 🚀 Tugas 7: Peningkatan Akurasi CNN + SVM pada CIFAR-10 (Struktur 8 Notebook)
 
-Proyek ini mengimplementasikan eksperimen komprehensif **CNN (Convolutional Neural Network) sebagai Feature Extractor** dan **SVM (Support Vector Machine) dengan Kernel RBF sebagai Classifier** pada dataset **CIFAR-10** (10 kelas citra berdimensi 32x32 piksel), dengan arsitektur pipeline terstruktur dan pemisahan proses yang bersih.
-
-Seluruh eksperimen disusun secara rapi dalam struktur **FLAT (tepat 18 file notebook)** langsung di dalam folder utama `Tugas7_CIFAR10_18_Files/` tanpa subfolder metode, mengikuti tabel pembagian:
-- **RGB CNN + SVM**: 5 file (01 s/d 05)
-- **Grayscale AVG CNN + SVM**: 5 file (06 s/d 10)
-- **Grayscale NTSC CNN + SVM**: 5 file (11 s/d 15)
-- **Feature Engineering: RGB + AVG + NTSC**: 3 file (16 s/d 18)
-- **TOTAL**: **18 FILE**
+Proyek ini mengimplementasikan eksperimen komprehensif **Custom CNN (Convolutional Neural Network) sebagai Feature Extractor** dan **SVM (Support Vector Machine) dengan Kernel RBF sebagai Classifier** pada dataset **CIFAR-10** (10 kelas citra berdimensi 32x32 piksel), dengan arsitektur pipeline modular 8 notebook:
+- **Alur 1 (RGB)**: `1_RGB_train.ipynb` & `2_RGB_test.ipynb`
+- **Alur 2 (Grayscale AVG)**: `3_GrayAvg_train.ipynb` & `4_GrayAvg_test.ipynb`
+- **Alur 3 (Grayscale NTSC)**: `5_GrayNTSC_train.ipynb` & `6_GrayNTSC_test.ipynb`
+- **Alur 4 (Feature Engineering Multidomain Fusion)**: `7_Fusion_train.ipynb` & `8_Fusion_test.ipynb`
 
 ---
 
-## 📁 Struktur Explorer VS Code (Tepat 18 Notebook Flat)
+## 📁 Struktur Explorer VS Code (Tepat 8 Notebook)
 
 ```text
-Tugas7_CIFAR10_18_Files/
+Pt 7/
 │
 ├── cifar10_artifacts/                      # Direktori model .keras, fitur .npz, dan metrik JSON
 │   ├── rgb/
@@ -22,162 +19,85 @@ Tugas7_CIFAR10_18_Files/
 │   ├── grayscale_ntsc/
 │   └── rgb_avg_ntsc/
 │
-├── 01_RGB_Training.ipynb                   # [RGB] 1. Training CNN 4-Blok
-├── 02_RGB_Ekstraksi.ipynb                  # [RGB] 2. Ekstraksi Fitur Layer 'svm_features' (512-dim)
-├── 03_RGB_Training_SVM.ipynb               # [RGB] 3. Training SVM & Injeksi Final ke .keras
-├── 04_RGB_Testing_CNN.ipynb                # [RGB] 4. Testing CNN Murni (10.000 Test Set)
-├── 05_RGB_Testing_SVM.ipynb                # [RGB] 5. Testing SVM dari File Tunggal .keras
+├── 1_RGB_train.ipynb                       # [RGB] 1. Training Custom CNN, Ekstraksi Fitur 512-D & Training SVM
+├── 2_RGB_test.ipynb                        # [RGB] 2. Testing Custom CNN, Testing SVM & Perbandingan Komparatif
 │
-├── 06_Grayscale_AVG_Training.ipynb         # [AVG] 1. Training CNN (Gray = (R+G+B)/3)
-├── 07_Grayscale_AVG_Ekstraksi.ipynb        # [AVG] 2. Ekstraksi Fitur Layer 'svm_features'
-├── 08_Grayscale_AVG_Training_SVM.ipynb     # [AVG] 3. Training SVM & Injeksi Final ke .keras
-├── 09_Grayscale_AVG_Testing_CNN.ipynb      # [AVG] 4. Testing CNN Murni
-├── 10_Grayscale_AVG_Testing_SVM.ipynb      # [AVG] 5. Testing SVM dari File Tunggal .keras
+├── 3_GrayAvg_train.ipynb                   # [AVG] 3. Training Custom CNN, Ekstraksi Fitur 512-D & Training SVM
+├── 4_GrayAvg_test.ipynb                    # [AVG] 4. Testing Custom CNN, Testing SVM & Perbandingan Komparatif
 │
-├── 11_Grayscale_NTSC_Training.ipynb        # [NTSC] 1. Training CNN (Y = 0.2989R+0.5870G+0.1140B)
-├── 12_Grayscale_NTSC_Ekstraksi.ipynb       # [NTSC] 2. Ekstraksi Fitur Layer 'svm_features'
-├── 13_Grayscale_NTSC_Training_SVM.ipynb    # [NTSC] 3. Training SVM & Injeksi Final ke .keras
-├── 14_Grayscale_NTSC_Testing_CNN.ipynb     # [NTSC] 4. Testing CNN Murni
-├── 15_Grayscale_NTSC_Testing_SVM.ipynb     # [NTSC] 5. Testing SVM dari File Tunggal .keras
+├── 5_GrayNTSC_train.ipynb                  # [NTSC] 5. Training Custom CNN, Ekstraksi Fitur 512-D & Training SVM
+├── 6_GrayNTSC_test.ipynb                   # [NTSC] 6. Testing Custom CNN, Testing SVM & Perbandingan Komparatif
 │
-├── 16_RGB_AVG_NTSC_Ekstraksi.ipynb         # [Feature Engineering] Ekstraksi & Fusi Fitur (1536-dim)
-├── 17_RGB_AVG_NTSC_Training_SVM.ipynb      # [Feature Engineering] Training SVM Fitur Gabungan & Injeksi Final
-├── 18_RGB_AVG_NTSC_Testing_SVM.ipynb       # [Feature Engineering] Testing SVM & Master Comparison
+├── 7_Fusion_train.ipynb                    # [Fusion] 7. Ekstraksi Fitur Fusi 1.536-D & Training SVM Classifier
+├── 8_Fusion_test.ipynb                     # [Fusion] 8. Testing SVM Fitur Fusi & Master Accuracy Comparison
 │
-└── README.md                               # Dokumentasi Teknis Lengkap Proyek
+├── README.md                               # Dokumentasi Teknis Lengkap Proyek (8 Notebook Pipeline)
+└── README_URUTAN_EKSEKUSI.md               # Panduan Urutan Eksekusi Singkat
 ```
 
 ---
 
 ## 🔬 Rincian Alur Kerja Per Tahap (Pipeline Architecture)
 
-### Bagian 1: RGB CNN + SVM (5 File)
-1. **`01_RGB_Training.ipynb`**:
-   - Memuat CIFAR-10 RGB asli `(32, 32, 3)`.
-   - Melatih model Deep CNN 4-blok (Conv2D 64 -> 128 -> 256 -> 512) dengan BatchNormalization, Spatial Dropout, dan Data Augmentation.
-   - Menyimpan model CNN ke `cifar10_artifacts/rgb/cnn_model.keras`.
-2. **`02_RGB_Ekstraksi.ipynb`**:
-   - Menggunakan CNN RGB sebagai feature extractor.
-   - Mengekstrak representasi vektor fitur tingkat tinggi berdimensi 512 dari layer `svm_features` (GlobalAveragePooling2D).
-   - Menyimpan ke `train_features.npz` (50.000 sampel) dan `test_features.npz` (10.000 sampel).
-3. **`03_RGB_Training_SVM.ipynb`**:
-   - Menstandarisasi vektor fitur training secara mandiri menggunakan `StandardScaler` (Anti Data Leakage: fit & transform hanya pada data training).
-   - Melatih Support Vector Machine (RBF Kernel, $C=10.0, \gamma=\text{'scale'}$) pada fitur training 512-dimensi yang telah diskalakan.
-   - Menyimpan seluruh model (CNN + Scaler + SVM) ke dalam **SATU file tunggal `.keras`** (`custom_cnn_cifar10_final.keras`) via format HDF5.
-4. **`04_RGB_Testing_CNN.ipynb`**:
-   - Evaluasi murni model CNN (Softmax Classifier) pada 10.000 sampel data testing.
-   - Menghasilkan Loss, Accuracy, Classification Report, dan Confusion Matrix.
-5. **`05_RGB_Testing_SVM.ipynb`**:
-   - Memuat Scaler dan SVM Model langsung dari file tunggal `.keras` (`custom_cnn_cifar10_final.keras`).
-   - Menstandarisasi fitur testing (`scaler.transform`) lalu menjalankan inferensi SVM (`svm_model.predict`).
-   - Menghasilkan evaluasi komparatif metrik klasifikasi dan Confusion Matrix.
+### 1. RGB Pipeline (2 Notebook)
+- **`1_RGB_train.ipynb`**:
+  - Memuat CIFAR-10 RGB asli `(32, 32, 3)` dan partisi 3-way stratified deterministik (Seed: `23092026`).
+  - Melatih model Custom Deep Residual CNN (4-blok residual dengan BatchNormalization, Spatial Dropout, dan Data Augmentation).
+  - Mengekstrak representasi vektor fitur tingkat tinggi berdimensi 512 dari layer `svm_features` (GlobalAveragePooling2D) untuk data train (50.000 sampel) dan test (10.000 sampel).
+  - Menstandarisasi fitur training (`StandardScaler`, anti data leakage) dan melatih classifier SVM RBF.
+  - Menyimpan model CNN, scaler, dan model SVM ke file `.keras` dan `.pkl`.
+- **`2_RGB_test.ipynb`**:
+  - Evaluasi model CNN pada 10.000 data test (Loss, Akurasi, Classification Report, Confusion Matrix).
+  - Evaluasi model SVM pada 10.000 vektor fitur testing (Classification Report, Confusion Matrix).
+  - Evaluasi komparatif langsung CNN vs SVM pada domain RGB.
 
 ---
 
-### Bagian 2: Grayscale Average (AVG) CNN + SVM (5 File)
-Mengikuti 5 tahapan yang sama dengan RGB, namun menggunakan citra **Grayscale Average**:
-- **Formula Transformasi**: $\text{Gray}_{\text{AVG}} = \frac{R + G + B}{3}$
-- **Bentuk Input**: `(32, 32, 1)`
-- **Karakteristik**: Menguji kemampuan CNN dan SVM dalam mengenali objek tanpa ketergantungan pada informasi warna (invarian kromatisitas).
-- **Files**:
-  - `06_Grayscale_AVG_Training.ipynb`
-  - `07_Grayscale_AVG_Ekstraksi.ipynb`
-  - `08_Grayscale_AVG_Training_SVM.ipynb`
-  - `09_Grayscale_AVG_Testing_CNN.ipynb`
-  - `10_Grayscale_AVG_Testing_SVM.ipynb`
+### 2. Grayscale Average Pipeline (2 Notebook)
+- **`3_GrayAvg_train.ipynb`**:
+  - Konversi citra ke Grayscale Average: $Gray_{\text{AVG}} = \frac{R + G + B}{3}$ `(32, 32, 1)`.
+  - Pelatihan Custom CNN Grayscale 1 kanal.
+  - Ekstraksi vektor fitur 512-D dari layer `svm_features`.
+  - Pelatihan SVM Classifier pada fitur Grayscale Average dan penyimpanan model.
+- **`4_GrayAvg_test.ipynb`**:
+  - Pengujian performa CNN Grayscale Average pada 10.000 sampel testing.
+  - Pengujian performa SVM Grayscale Average pada 10.000 sampel testing.
+  - Analisis perbandingan performa CNN vs SVM Grayscale Average.
 
 ---
 
-### Bagian 3: Grayscale NTSC CNN + SVM (5 File)
-Mengikuti 5 tahapan yang sama, menggunakan citra **Grayscale NTSC (Perceptual Luminance)**:
-- **Formula Transformasi**: $Y_{\text{NTSC}} = 0.2989 R + 0.5870 G + 0.1140 B$
-- **Bentuk Input**: `(32, 32, 1)`
-- **Karakteristik**: Menyesuaikan sensitivitas fotoreseptor mata manusia (paling peka terhadap warna hijau, diikuti merah, lalu biru), memberikan kontras tekstur yang lebih alami dibanding rata-rata aritmatika.
-- **Files**:
-  - `11_Grayscale_NTSC_Training.ipynb`
-  - `12_Grayscale_NTSC_Ekstraksi.ipynb`
-  - `13_Grayscale_NTSC_Training_SVM.ipynb`
-  - `14_Grayscale_NTSC_Testing_CNN.ipynb`
-  - `15_Grayscale_NTSC_Testing_SVM.ipynb`
+### 3. Grayscale NTSC Pipeline (2 Notebook)
+- **`5_GrayNTSC_train.ipynb`**:
+  - Konversi citra ke Grayscale NTSC (Perceptual Luminance): $Y_{\text{NTSC}} = 0.2989 R + 0.5870 G + 0.1140 B$ `(32, 32, 1)`.
+  - Pelatihan Custom CNN Grayscale NTSC.
+  - Ekstraksi vektor fitur 512-D dari layer `svm_features`.
+  - Pelatihan SVM Classifier pada fitur Grayscale NTSC dan penyimpanan model.
+- **`6_GrayNTSC_test.ipynb`**:
+  - Pengujian performa CNN Grayscale NTSC pada 10.000 sampel testing.
+  - Pengujian performa SVM Grayscale NTSC pada 10.000 sampel testing.
+  - Analisis perbandingan performa CNN vs SVM Grayscale NTSC.
 
 ---
 
-### Bagian 4: Feature Engineering: RGB + AVG + NTSC (3 File)
-Feature engineering ini **tidak memerlukan training CNN tersendiri**, melainkan melakukan **sinergi representasi fitur (Feature Fusion)** dari ketiga model terlatih sebelumnya:
-
-1. **`16_RGB_AVG_NTSC_Ekstraksi.ipynb`**:
-   - Mengambil fitur layer `svm_features` dari 3 model CNN terlatih:
-     - Fitur RGB: 512 dimensi (informasi warna kromatik)
-     - Fitur Grayscale AVG: 512 dimensi (informasi intensitas seragam)
-     - Fitur Grayscale NTSC: 512 dimensi (informasi luminansi perseptual)
-   - **Feature Fusion**: Menggabungkan ketiga representasi menjadi **vektor fitur berdimensi 1536** ($512 + 512 + 512$).
-   - Menyimpan hasil fusi ke `cifar10_artifacts/rgb_avg_ntsc/train_features.npz` dan `test_features.npz`.
-
-2. **`17_RGB_AVG_NTSC_Training_SVM.ipynb`**:
-   - Menstandarisasi vektor fitur gabungan 1536-dimensi menggunakan `StandardScaler`.
-   - Melatih SVM RBF Classifier ($C=10.0, \gamma=\text{'scale'}$) pada seluruh 50.000 sampel fitur gabungan.
-   - Menyimpan `scaler.pkl` dan `svm_model.pkl` beserta metadata ke direktori artefak.
-
-3. **`18_RGB_AVG_NTSC_Testing_SVM.ipynb`**:
-   - Memuat Scaler dan SVM Model dari disk.
-   - Menstandarisasi fitur testing (`scaler.transform`) lalu menguji performa pada 10.000 sampel data testing (`svm_model.predict`).
-   - Menghasilkan Confusion Matrix, Classification Report, dan **Diagram Perbandingan Master Akurasi Semua Alur** (Alur 1 RGB, Alur 2 AVG, Alur 3 NTSC, dan Alur 4 Feature Fusion).
+### 4. Feature Engineering: Multi-Domain Fusion Pipeline (2 Notebook)
+- **`7_Fusion_train.ipynb`**:
+  - **Feature Fusion**: Menggabungkan representasi fitur tingkat tinggi dari 3 model Custom CNN:
+    - RGB: 512 dimensi (informasi warna kromatik)
+    - Grayscale AVG: 512 dimensi (informasi intensitas seragam)
+    - Grayscale NTSC: 512 dimensi (informasi luminansi perseptual)
+    - **Total: 1.536 Dimensi** ($512 + 512 + 512$).
+  - Preprocessing multi-domain (`FusedDomainPreprocessor`): penskalaan per-domain, pembobotan representasi, dan normalisasi L2.
+  - Pelatihan SVM Classifier pada ruang fitur gabungan 1.536 dimensi.
+- **`8_Fusion_test.ipynb`**:
+  - Memuat Preprocessor Scaler dan Model Final SVM Fitur Gabungan.
+  - Inferensi SVM murni pada 10.000 data testing.
+  - Menghasilkan Confusion Matrix, Classification Report komprehensif.
+  - Menampilkan **Diagram Perbandingan Master Akurasi Semua Alur** (Alur 1 s/d Alur 4) dengan garis batas Target 95%.
 
 ---
 
-## 🔬 Pembahasan Teoretis 7 Feature Engineering Terintegrasi
-
-Sesuai requirement eksperimen "7 Fitur Engineering", proyek ini memanfaatkan dan mengkaji konsep representasi fitur berikut:
-
-1. **Feature Engineering 1: RGB Multi-Spectral Representation**
-   - Mengodekan pola kromatik fotometri asli 3 saluran.
-2. **Feature Engineering 2: Grayscale Arithmetic Average (AVG)**
-   - Normalisasi intensitas isotropik $Gray = (R+G+B)/3$.
-3. **Feature Engineering 3: Grayscale Perceptual Luminance (NTSC)**
-   - Bobot fisiologis mata manusia $Y = 0.2989R + 0.5870G + 0.1140B$.
-4. **Feature Engineering 4: Multi-Domain Concatenative Fusion (RGB + AVG + NTSC)**
-   - Penggabungan representasi semantik tinggi CNN menjadi ruang fitur 1536-dimensi.
-5. **Feature Engineering 5: L2-Hyperspherical Normalization**
-   - Memproyeksikan vektor fitur ke permukaan bola satuan ($\|x\|_2 = 1$), mengubah jarak Euclidean kernel RBF menjadi jarak Cosinus:
-     $$\|u - v\|_2^2 = 2 - 2 \cos(u, v)$$
-6. **Feature Engineering 6: High-Dimensional SVM Margin Maximization**
-   - Regularisasi non-linear $C=25.0$ pada ruang kernel berdimensi tinggi untuk memisahkan kelas-kelas sulit (seperti `cat` vs `dog` dan `automobile` vs `truck`).
-7. **Feature Engineering 7: Hybrid End-to-End Single-Container Injection**
-   - Integrasi arsitektur CNN Feature Extractor dan SVM Classifier ke dalam satu file `.keras` mandiri melalui serialisasi HDF5.
-
----
-
-## 🛡️ Kebijakan Anti-Data Leakage
-
-Proyek ini menjamin keabsahan data secara mutlak:
-1. Data testing (10.000 sampel) **hanya pernah digunakan untuk evaluasi akhir**.
-2. Objek penskalaan (`StandardScaler`, `Normalizer`) **hanya di-`fit` pada data training**.
-3. Transformasi pada data testing hanya menggunakan parameter ($\mu, \sigma$) yang telah dipelajari dari data training via `.transform()`.
-
----
-
-## 📦 Injeksi Model Final ke Format `.keras`
-
-Sesuai instruksi, model akhir disimpan ke dalam **SATU FILE TUNGGAL BERFORMAT `.keras`** (`custom_cnn_cifar10_final.keras`):
-- Model arsitektur dan bobot CNN disimpan dalam format `.keras`.
-- Objek Scikit-Learn `svm_pipeline` diserialisasi menggunakan `pickle` dan disuntikkan ke dalam file `.keras` sebagai dataset terkompresi HDF5 (`/svm_pipeline_pickle`).
-- Metadata pendukung disematkan pada atribut file.
-- File testing (misal `05_RGB_Testing_SVM.ipynb` dan `18_RGB_AVG_NTSC_Testing_SVM.ipynb`) dapat memuat model CNN dan SVM secara bersamaan dari satu file `.keras` ini dalam hitungan milidetik!
-
----
-
-## 📊 Ringkasan Hasil Eksperimen & Pencapaian Akurasi > 95%
-
-Berikut adalah rekapitulasi performa akurasi testing pada 10.000 sampel CIFAR-10 di seluruh alur:
-
-| No | Alur Eksperimen | Metode / Representasi | Akurasi CNN | Akurasi SVM | Target ($\ge 95\%$) | Status |
-|:---:|:---|:---|:---:|:---:|:---:|:---:|
-| 1 | **Alur 1 (RGB)** | 3 Saluran Warna (512-D) | 93.20% | 93.31% | 95.00% | Baseline Unggul |
-| 2 | **Alur 2 (Grayscale AVG)** | Rata-rata Aritmatika (512-D) | 86.09% | 88.99% | 95.00% | Invarian Kromatisitas |
-| 3 | **Alur 3 (Grayscale NTSC)** | Luminansi Fisiologis (512-D) | 87.99% | 88.58% | 95.00% | Kontras Tekstural |
-| 4 | **Alur 4 (Feature Eng.)** | **Multi-Domain Fused (1.536-D) + SVM** | — | **95.18%** | **95.00%** | 🏆 **TERLAMPAUI (> 95%)** |
-
-### 🔍 Analisis Kunci Keberhasilan:
-1. **Sinergi Multi-Domain**: Penggabungan fitur warna kromatik RGB (512-D), intensitas seragam AVG (512-D), dan persepsi luminansi NTSC (512-D) menghasilkan representasi vektor komprehensif 1.536-D yang saling mengoreksi kelemahan masing-masing representasi tunggal.
-2. **Kinerja Per Kelas Teruji**: 7 dari 10 kelas CIFAR-10 mencapai akurasi $\ge 95\%$ (Automobile 97.9%, Horse 96.7%, Frog 96.7%, Truck 97.0%, Ship 97.2%, Airplane 96.6%, Deer 95.4%). Kelas sulit (`cat`, `dog`, `bird`) terangkat berkat margin SVM kernel RBF optimal.
-3. **Diagram Master Akurasi**: File `cifar10_artifacts/rgb_avg_ntsc/master_accuracy_comparison.png` dan `cifar10_artifacts/master_accuracy_comparison.png` secara visual menampilkan batang hijau Alur 4 di angka **95.18%**, melampaui garis merah batas target minimum 95.0%.
+## 🛡️ Prinsip Metodologi & Kebijakan Anti-Data Leakage
+1. Model CNN adalah **Custom CNN murni** (tanpa backbone pretrained transfer learning seperti ResNet/EfficientNet).
+2. Data testing 10.000 sampel murni diisolasi hanya untuk tahap evaluasi akhir.
+3. Transformasi penskalaan hanya memelajari parameter statistik dari data training (`.fit()` hanya pada training set, data testing hanya menggunakan `.transform()`).
+4. Deterministik & Reproducible: Seluruh pembagian partisi dan seed pelatihan menggunakan `23092026`.
