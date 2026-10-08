@@ -172,9 +172,9 @@ Berikut adalah rekapitulasi performa akurasi testing pada 10.000 sampel CIFAR-10
 
 | No | Alur Eksperimen | Metode / Representasi | Akurasi CNN | Akurasi SVM | Target ($\ge 95\%$) | Status |
 |:---:|:---|:---|:---:|:---:|:---:|:---:|
-| 1 | **Alur 1 (RGB)** | 3 Saluran Warna (512-D) | 93.20% | 93.31% | 95.00% | Baseline Unggul |
-| 2 | **Alur 2 (Grayscale AVG)** | Rata-rata Aritmatika (512-D) | 86.09% | 88.99% | 95.00% | Invarian Kromatisitas |
-| 3 | **Alur 3 (Grayscale NTSC)** | Luminansi Fisiologis (512-D) | 87.99% | 88.58% | 95.00% | Kontras Tekstural |
+| 1 | **Alur 1 (RGB)** | 3 Saluran Warna (512-D) | 92.25% | 92.72% | 95.00% | Baseline Unggul |
+| 2 | **Alur 2 (Grayscale AVG)** | Rata-rata Aritmatika (512-D) | 87.27% | 88.99% | 95.00% | Invarian Kromatisitas |
+| 3 | **Alur 3 (Grayscale NTSC)** | Luminansi Fisiologis (512-D) | 83.91% | 88.26% | 95.00% | Kontras Tekstural |
 | 4 | **Alur 4 (Feature Eng.)** | **Multi-Domain Fused (1.536-D) + SVM** | — | **95.18%** | **95.00%** | 🏆 **TERLAMPAUI (> 95%)** |
 
 ### 🔍 Analisis Kunci Keberhasilan:
