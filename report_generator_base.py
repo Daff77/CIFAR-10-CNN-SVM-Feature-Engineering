@@ -50,6 +50,21 @@ def set_table_borders(table, color=COLOR_BORDER_HEX, sz="4", val="single"):
     )
     tblPr.append(borders)
 
+def set_full_grid_borders(table, color="444444", sz="4", val="single"):
+    """Mengatur garis batas penuh (grid lengkap) pada semua sisi dan kolom tabel."""
+    tblPr = table._tbl.tblPr
+    borders = parse_xml(
+        f'<w:tblBorders {nsdecls("w")}>'
+        f'<w:top w:val="{val}" w:sz="{sz}" w:space="0" w:color="{color}"/>'
+        f'<w:bottom w:val="{val}" w:sz="{sz}" w:space="0" w:color="{color}"/>'
+        f'<w:left w:val="{val}" w:sz="{sz}" w:space="0" w:color="{color}"/>'
+        f'<w:right w:val="{val}" w:sz="{sz}" w:space="0" w:color="{color}"/>'
+        f'<w:insideH w:val="{val}" w:sz="{sz}" w:space="0" w:color="{color}"/>'
+        f'<w:insideV w:val="{val}" w:sz="{sz}" w:space="0" w:color="{color}"/>'
+        f'</w:tblBorders>'
+    )
+    tblPr.append(borders)
+
 def create_base_document():
     """Membuat dokumen Word dasar dengan ukuran kertas A4, margin standar, dan footer nomor halaman."""
     doc = docx.Document()
@@ -271,23 +286,99 @@ def add_bullet(doc, text, bold_prefix=""):
     r.font.size = Pt(11.5)
     return p
 
+def add_environment_table(doc, sumber_kode, dataset_desc, artefak_desc, is_test=False):
+    """
+    Menyusun Tabel Identitas Lingkungan Komputasi persis seperti pada referensi dan tangkapan layar pengguna:
+    Item | Keterangan
+    - Sumber Kode
+    - Environment: Jupyter Notebook (lokal), kernel Python (CNNgpu), TensorFlow 2.10.1, GPU terdeteksi (GPU available: True)
+    - CPU: Intel Core i7-13620H
+    - GPU: Hybrid Graphics: NVIDIA GeForce RTX 2050 4GB (Discrete GPU) + Intel UHD Graphics (Integrated GPU)
+    - RAM: 16 GB
+    - Framework: TensorFlow / Keras, scikit-learn (GridSearchCV, SVC, Pipeline), h5py, Matplotlib
+    - Dataset: [Spesifik dataset]
+    - Reproducibility: RANDOM_STATE = 23092026
+    - Artefak Output / Model yang Diuji: [Spesifik artefak]
+    """
+    table = doc.add_table(rows=10, cols=2)
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    table.autofit = False
+    
+    # Border grid hitam penuh persis seperti pada contoh tabel Word pengguna
+    set_full_grid_borders(table, color="000000", sz="4")
+    
+    col_widths = [Inches(1.8), Inches(4.47)]
+    
+    # Header Row: Bold, teks hitam, latar putih bersih
+    headers = ["Item", "Keterangan"]
+    hdr_cells = table.rows[0].cells
+    for i, h in enumerate(headers):
+        hdr_cells[i].text = h
+        set_cell_background(hdr_cells[i], "FFFFFF")
+        set_cell_margins(hdr_cells[i], top=100, bottom=100, left=130, right=130)
+        p = hdr_cells[i].paragraphs[0]
+        p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        for r in p.runs:
+            r.font.name = "Times New Roman"
+            r.font.size = Pt(10.5)
+            r.bold = True
+            r.font.color.rgb = RGBColor(0, 0, 0)
+            
+    artefak_label = "Model yang Diuji" if is_test else "Artefak Output"
+    
+    rows_data = [
+        ["Sumber Kode", sumber_kode],
+        ["Environment", "Jupyter Notebook (lokal), kernel Python (CNNgpu), TensorFlow 2.10.1, GPU terdeteksi (GPU available: True)"],
+        ["CPU", "Intel Core i7-13620H"],
+        ["GPU", "Hybrid Graphics: NVIDIA GeForce RTX 2050 4GB (Discrete GPU) + Intel UHD Graphics (Integrated GPU)"],
+        ["RAM", "16 GB"],
+        ["Framework", "TensorFlow / Keras, scikit-learn (GridSearchCV, SVC, Pipeline), h5py, Matplotlib"],
+        ["Dataset", dataset_desc],
+        ["Reproducibility", "RANDOM_STATE = 23092026"],
+        [artefak_label, artefak_desc]
+    ]
+    
+    for r_idx, (item, ket) in enumerate(rows_data):
+        row_cells = table.rows[r_idx + 1].cells
+        row_cells[0].text = item
+        row_cells[1].text = ket
+        
+        for c_idx in range(2):
+            set_cell_background(row_cells[c_idx], "FFFFFF")
+            set_cell_margins(row_cells[c_idx], top=85, bottom=85, left=120, right=120)
+            p = row_cells[c_idx].paragraphs[0]
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            for r in p.runs:
+                r.font.name = "Times New Roman"
+                r.font.size = Pt(10)
+                r.bold = False
+                r.font.color.rgb = RGBColor(0, 0, 0)
+                    
+    for row in table.rows:
+        for idx, width in enumerate(col_widths):
+            row.cells[idx].width = width
+            
+    p_after = doc.add_paragraph()
+    p_after.paragraph_format.space_before = Pt(0)
+    p_after.paragraph_format.space_after = Pt(6)
+    return table
+
+
 def add_table_data(doc, headers, rows_data, col_widths=None):
     """Menyusun tabel data berformat rapi dengan header hijau UIN."""
     table = doc.add_table(rows=len(rows_data) + 1, cols=len(headers))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     table.autofit = False
-    set_table_borders(table)
+    set_full_grid_borders(table, color="555555", sz="4")
     
     # Header Row
     hdr_cells = table.rows[0].cells
     for i, h in enumerate(headers):
         hdr_cells[i].text = str(h)
         set_cell_background(hdr_cells[i], COLOR_PRIMARY_HEX)
-        set_cell_margins(hdr_cells[i], top=120, bottom=120, left=140, right=140)
+        set_cell_margins(hdr_cells[i], top=110, bottom=110, left=130, right=130)
         p = hdr_cells[i].paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p.paragraph_format.space_before = Pt(0)
-        p.paragraph_format.space_after = Pt(0)
         for r in p.runs:
             r.font.name = "Times New Roman"
             r.font.size = Pt(10)
@@ -309,8 +400,6 @@ def add_table_data(doc, headers, rows_data, col_widths=None):
                 p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             else:
                 p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            p.paragraph_format.space_before = Pt(0)
-            p.paragraph_format.space_after = Pt(0)
             for r in p.runs:
                 r.font.name = "Times New Roman"
                 r.font.size = Pt(9.5)

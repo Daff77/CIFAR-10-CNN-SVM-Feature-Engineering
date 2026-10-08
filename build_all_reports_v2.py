@@ -9,7 +9,7 @@ import shutil
 from docx.shared import Inches, Pt
 from report_generator_base import (
     create_base_document, add_cover, add_h1, add_h2, add_h3, add_p,
-    add_bullet, add_callout, add_table_data, add_figure
+    add_bullet, add_callout, add_table_data, add_figure, add_environment_table
 )
 
 OUTPUT_DIR = "Laporan_CIFAR10"
@@ -54,17 +54,14 @@ def build_report_1():
     add_bullet(doc, "Memastikan data testing resmi (10.000 citra) tetap terisolasi dan tidak pernah disentuh saat penyesuaian bobot CNN maupun penalaan hyperparameter SVM.", "Prinsip Anti-Data Leakage: ")
 
     add_h1(doc, "3. Environment dan Konfigurasi")
-    add_p(doc, "Tabel 1 merangkum spesifikasi perangkat lunak, perangkat keras, dan pustaka komputasi yang digunakan pada eksperimen ini:")
-    env_headers = ["Parameter / Komponen", "Keterangan Spesifikasi"]
-    env_data = [
-        ["Nama Notebook", "1_RGB_train.ipynb"],
-        ["Bahasa & Framework", "Python 3.10, TensorFlow 2.10.1, Keras 2.10.0, Scikit-Learn 1.7.2"],
-        ["Akselerasi Komputasi", "NVIDIA GPU CUDA-enabled (terdeteksi pada conda environment CNNgpu)"],
-        ["Processor (CPU)", "Multi-Core Processor x86_64 dengan dukungan Multi-Threading joblib"],
-        ["Random Seed Deterministik", "23092026 (Partisi Stratified 3-Way yang Reproducible)"],
-        ["Pustaka Pendukung", "NumPy, Matplotlib, Seaborn, h5py, pickle, joblib"]
-    ]
-    add_table_data(doc, env_headers, env_data, [Inches(2.4), Inches(3.87)])
+    add_p(doc, "Tabel 1 merangkum spesifikasi perangkat lunak, perangkat keras, dan lingkungan komputasi yang digunakan pada eksperimen ini:")
+    add_environment_table(
+        doc,
+        sumber_kode="1_RGB_train.ipynb",
+        dataset_desc="CIFAR-10 (data training 50.000 citra RGB 32x32, 10 kelas)",
+        artefak_desc="custom_cnn_cifar10_final.keras (berisi Custom CNN + Scaler + SVM pipeline dalam satu file), cnn_model.keras, scaler.pkl, svm_model.pkl, train_features.npz, test_features.npz",
+        is_test=False
+    )
 
     add_h1(doc, "4. Dataset CIFAR-10")
     add_p(doc, "Dataset CIFAR-10 adalah tolok ukur standar visi komputer yang terdiri atas 60.000 citra berwarna berdimensi 32x32 piksel dalam 10 kelas objek yang saling terpisah secara mutual eksklusif (airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck). Sebanyak 50.000 sampel dialokasikan untuk fase pengembangan (training/validation), dan 10.000 sampel untuk pengujian akhir.")
@@ -193,15 +190,14 @@ def build_report_2():
     add_p(doc, "Data testing resmi sebanyak 10.000 sampel diperlakukan sebagai representasi dunia nyata yang terisolasi. Seluruh parameter model CNN dan bobot SVM telah dibekukan (frozen). Penskalaan fitur pada data testing hanya memanggil metode .transform() menggunakan nilai rata-rata dan deviasi standar yang telah dipelajari dari data training tanpa ada kalkulasi ulang statistik pada data uji.")
 
     add_h1(doc, "3. Environment dan Konfigurasi")
-    env_headers = ["Komponen Pengujian", "Keterangan Spesifikasi"]
-    env_data = [
-        ["Nama Notebook", "2_RGB_test.ipynb"],
-        ["Data Uji", "10.000 citra test set resmi CIFAR-10 RGB (32, 32, 3)"],
-        ["Model CNN yang Dimuat", "custom_cnn_cifar10_final.keras (Custom CNN cnn_3ch)"],
-        ["Model SVM yang Dimuat", "scaler.pkl dan svm_model.pkl (SVC C=1.0, gamma=0.006048)"],
-        ["Evaluator", "Scikit-Learn Classification Report & Confusion Matrix Heatmap"]
-    ]
-    add_table_data(doc, env_headers, env_data, [Inches(2.4), Inches(3.87)])
+    add_p(doc, "Berikut rincian spesifikasi lingkungan komputasi, perangkat keras, dan konfigurasi sistem yang digunakan pada pengujian ini:")
+    add_environment_table(
+        doc,
+        sumber_kode="2_RGB_test.ipynb",
+        dataset_desc="CIFAR-10 data testing (10.000 citra RGB 32x32, 1.000 citra per kelas)",
+        artefak_desc="custom_cnn_cifar10_final.keras (Custom CNN cnn_3ch + Scaler + SVM pipeline), confusion_matrix_cnn.png, confusion_matrix_svm.png",
+        is_test=True
+    )
 
     add_h1(doc, "4. Dataset Testing")
     add_p(doc, "Dataset pengujian terdiri dari tepat 10.000 citra berwarna berdimensi 32x32 piksel, terbagi rata menjadi 1.000 citra per kelas untuk ke-10 kategori objek.")
@@ -318,15 +314,14 @@ def build_report_3():
     add_p(doc, "Transformasi ini menguji invarian kromatisitas jaringan konvolusi. Tanpa petunjuk warna, model dipaksa untuk fokus pada ekstraksi fitur tepi (edges), bentuk geometris, kontras bayangan, dan tekstur permukaan.")
 
     add_h1(doc, "3. Environment dan Konfigurasi")
-    env_headers = ["Parameter / Komponen", "Keterangan Spesifikasi"]
-    env_data = [
-        ["Nama Notebook", "3_GrayAvg_train.ipynb"],
-        ["Metode Grayscale", "Arithmetic Average: (R + G + B) / 3"],
-        ["Dimensi Citra Input", "(32, 32, 1) — 1 Kanal Monokromatik"],
-        ["Framework & Perangkat", "Python 3.10, TensorFlow 2.10.1, NVIDIA GPU CUDA-enabled (CNNgpu)"],
-        ["Random Seed Deterministik", "23092026 (Partisi Stratified 3-Way)"]
-    ]
-    add_table_data(doc, env_headers, env_data, [Inches(2.4), Inches(3.87)])
+    add_p(doc, "Berikut rincian spesifikasi lingkungan komputasi, perangkat keras, dan konfigurasi sistem yang digunakan pada eksperimen ini:")
+    add_environment_table(
+        doc,
+        sumber_kode="3_GrayAvg_train.ipynb",
+        dataset_desc="CIFAR-10 (data training 50.000 citra Grayscale Average (R+G+B)/3 32x32x1, 10 kelas)",
+        artefak_desc="custom_cnn_cifar10_final.keras (berisi Custom CNN AVG + Scaler + SVM pipeline dalam satu file), cnn_model.keras, scaler.pkl, svm_model.pkl, train_features.npz, test_features.npz",
+        is_test=False
+    )
 
     add_h1(doc, "4. Dataset CIFAR-10 Grayscale Average")
     add_p(doc, "Dataset terdiri dari 50.000 citra training bersaluran tunggal (32, 32, 1) dengan 10 kelas objek seimbang sempurna (5.000 citra per kelas).")
@@ -422,15 +417,14 @@ def build_report_4():
     add_p(doc, "Evaluasi murni pada test set beku (frozen weights) tanpa tuning atau manipulasi prediksi.")
 
     add_h1(doc, "3. Environment dan Konfigurasi")
-    env_headers = ["Komponen Pengujian", "Keterangan Spesifikasi"]
-    env_data = [
-        ["Nama Notebook", "4_GrayAvg_test.ipynb"],
-        ["Format Test Set", "10.000 citra Grayscale Average (32, 32, 1)"],
-        ["Model CNN yang Diuji", "Custom Deep Residual CNN (custom_cnn_avg)"],
-        ["Model SVM yang Diuji", "SVM RBF (C=3.0, gamma=0.009124) dari scaler.pkl & svm_model.pkl"],
-        ["Dimensi Vektor Fitur", "(10000, 512) dari layer svm_features"]
-    ]
-    add_table_data(doc, env_headers, env_data, [Inches(2.4), Inches(3.87)])
+    add_p(doc, "Berikut rincian spesifikasi lingkungan komputasi, perangkat keras, dan konfigurasi sistem yang digunakan pada pengujian ini:")
+    add_environment_table(
+        doc,
+        sumber_kode="4_GrayAvg_test.ipynb",
+        dataset_desc="CIFAR-10 data testing (10.000 citra Grayscale Average (R+G+B)/3 32x32x1, 1.000 citra per kelas)",
+        artefak_desc="custom_cnn_cifar10_final.keras (Custom CNN custom_cnn_avg + Scaler + SVM pipeline), confusion_matrix_cnn.png, confusion_matrix_svm.png",
+        is_test=True
+    )
 
     add_h1(doc, "4. Dataset Testing")
     add_p(doc, "10.000 citra test bersaluran tunggal (32, 32, 1), 1.000 citra per kelas.")
@@ -541,15 +535,14 @@ def build_report_5():
     add_p(doc, "Pembobotan ini mempertahankan kontras alami yang lebih jelas dibanding rata-rata aritmatika biasa.")
 
     add_h1(doc, "3. Environment dan Konfigurasi")
-    env_headers = ["Parameter / Komponen", "Keterangan Spesifikasi"]
-    env_data = [
-        ["Nama Notebook", "5_GrayNTSC_train.ipynb"],
-        ["Metode Transformasi", "NTSC / ITU-R BT.601: Y = 0.2989R + 0.5870G + 0.1140B"],
-        ["Bentuk Input Citra", "(32, 32, 1) — 1 Kanal Luminansi"],
-        ["Framework & Perangkat", "Python 3.10, TensorFlow 2.10.1, NVIDIA GPU CUDA-enabled (CNNgpu)"],
-        ["Random Seed", "23092026 (Deterministik)"]
-    ]
-    add_table_data(doc, env_headers, env_data, [Inches(2.4), Inches(3.87)])
+    add_p(doc, "Berikut rincian spesifikasi lingkungan komputasi, perangkat keras, dan konfigurasi sistem yang digunakan pada eksperimen ini:")
+    add_environment_table(
+        doc,
+        sumber_kode="5_GrayNTSC_train.ipynb",
+        dataset_desc="CIFAR-10 (data training 50.000 citra Grayscale NTSC (0.2989R+0.5870G+0.1140B) 32x32x1, 10 kelas)",
+        artefak_desc="custom_cnn_cifar10_final.keras (berisi Custom CNN NTSC + Scaler + SVM pipeline dalam satu file), cnn_model.keras, scaler.pkl, svm_model.pkl, train_features.npz, test_features.npz",
+        is_test=False
+    )
 
     add_h1(doc, "4. Dataset CIFAR-10 Grayscale NTSC")
     add_p(doc, "50.000 citra training berdimensi (32, 32, 1), 5.000 citra per kelas.")
@@ -643,15 +636,14 @@ def build_report_6():
     add_p(doc, "Evaluasi murni pada test set dengan model beku tanpa penalaan pada data uji.")
 
     add_h1(doc, "3. Environment dan Konfigurasi")
-    env_headers = ["Komponen Pengujian", "Keterangan Spesifikasi"]
-    env_data = [
-        ["Nama Notebook", "6_GrayNTSC_test.ipynb"],
-        ["Format Test Set", "10.000 citra Grayscale NTSC (32, 32, 1)"],
-        ["Model CNN yang Diuji", "Custom Deep Residual CNN (custom_cnn_ntsc)"],
-        ["Model SVM yang Diuji", "SVM RBF (C=1.0, gamma=0.006522)"],
-        ["Dimensi Vektor Fitur", "(10000, 512)"]
-    ]
-    add_table_data(doc, env_headers, env_data, [Inches(2.4), Inches(3.87)])
+    add_p(doc, "Berikut rincian spesifikasi lingkungan komputasi, perangkat keras, dan konfigurasi sistem yang digunakan pada pengujian ini:")
+    add_environment_table(
+        doc,
+        sumber_kode="6_GrayNTSC_test.ipynb",
+        dataset_desc="CIFAR-10 data testing (10.000 citra Grayscale NTSC 32x32x1, 1.000 citra per kelas)",
+        artefak_desc="custom_cnn_cifar10_final.keras (Custom CNN custom_cnn_ntsc + Scaler + SVM pipeline), confusion_matrix_cnn.png, confusion_matrix_svm.png",
+        is_test=True
+    )
 
     add_h1(doc, "4. Dataset Testing")
     add_p(doc, "10.000 citra test Grayscale NTSC, 1.000 per kelas.")
@@ -767,18 +759,14 @@ def build_report_7():
     add_p(doc, "Ketika fitur RGB mengalami ambiguitas (misal kucing dan anjing berwarna cokelat serupa), fitur tekstur NTSC dan AVG memberikan sinyal diskriminatif pembeda.")
 
     add_h1(doc, "3. Environment dan Konfigurasi")
-    env_headers = ["Parameter / Komponen", "Keterangan Spesifikasi"]
-    env_data = [
-        ["Nama Notebook", "7_Fusion_train.ipynb"],
-        ["Metode Feature Engineering", "Multi-Domain Concatenative Fusion (RGB + AVG + NTSC)"],
-        ["Dimensi Fitur Gabungan", "1.536 Dimensi (512 + 512 + 512)"],
-        ["Jumlah Sampel Fitur", "50.000 Sampel Training & 10.000 Sampel Testing (format .npz)"],
-        ["Partisi Training SVM", "40.000 Sub-Train, 5.000 Validation, 5.000 Independent Validation (unseen oleh CNN)"],
-        ["Model Preprocessing", "Mode D+L2: Per-Domain StandardScaler + Bobot (1.0, 0.7, 0.7) + L2 Normalizer"],
-        ["Model Classifier", "Fused Consensus SVM Classifier (RBF Kernel + Cosine Linear)"],
-        ["Hardware Komputasi", "Multi-Core CPU Parallel Accelerated (joblib & Scikit-Learn)"]
-    ]
-    add_table_data(doc, env_headers, env_data, [Inches(2.4), Inches(3.87)])
+    add_p(doc, "Berikut rincian spesifikasi lingkungan komputasi, perangkat keras, dan konfigurasi sistem yang digunakan pada eksperimen feature fusion ini:")
+    add_environment_table(
+        doc,
+        sumber_kode="7_Fusion_train.ipynb",
+        dataset_desc="CIFAR-10 (data training 50.000 sampel fitur gabungan 1.536-D RGB+AVG+NTSC, 10 kelas)",
+        artefak_desc="train_features.npz, test_features.npz (1.536-D), scaler.pkl, svm_model.pkl, metadata.json",
+        is_test=False
+    )
 
     add_h1(doc, "4. Dataset & Representasi Fitur Masukan")
     add_p(doc, "Vektor fitur dimuat dari direktori cifar10_artifacts/rgb/, grayscale_avg/, dan grayscale_ntsc/. Ketiga representasi telah diekstrak dari layer svm_features pada tahap sebelumnya.")
@@ -860,17 +848,14 @@ def build_report_8():
     add_p(doc, "Inferensi dilakukan murni pada 10.000 data test resmi dengan model dan scaler yang telah dibekukan (frozen). Tidak ada tuning pada test set, tidak ada manipulasi label, dan tidak ada hardcoded override.")
 
     add_h1(doc, "3. Environment dan Konfigurasi")
-    env_headers = ["Parameter / Komponen", "Keterangan Spesifikasi"]
-    env_data = [
-        ["Nama Notebook", "8_Fusion_test.ipynb"],
-        ["Format Data Pengujian", "10.000 Sampel Test Set Gabungan Multi-Domain (10000, 1536)"],
-        ["Model Preprocessor", "FusedDomainPreprocessor dari scaler.pkl"],
-        ["Model Classifier", "Consensus SVM Classifier dari svm_model.pkl"],
-        ["Target Akurasi Praktikum", ">= 95.00% pada 10.000 Test Set Resmi CIFAR-10"],
-        ["Hasil Akurasi Aktual", "95.14% (TERCAPAI & TERLAMPAUI)"],
-        ["Macro / Weighted F1-Score", "95.14% / 95.14%"]
-    ]
-    add_table_data(doc, env_headers, env_data, [Inches(2.4), Inches(3.87)])
+    add_p(doc, "Berikut rincian spesifikasi lingkungan komputasi, perangkat keras, dan konfigurasi sistem yang digunakan pada pengujian akhir integrasi feature fusion:")
+    add_environment_table(
+        doc,
+        sumber_kode="8_Fusion_test.ipynb",
+        dataset_desc="CIFAR-10 data testing (10.000 sampel fitur gabungan 1.536-D RGB+AVG+NTSC, 1.000 sampel per kelas)",
+        artefak_desc="scaler.pkl, svm_model.pkl (Consensus SVM), confusion_matrix_svm.png, master_accuracy_comparison.png",
+        is_test=True
+    )
 
     add_h1(doc, "4. Pipeline Inferensi Akhir")
     add_p(doc, "Alur inferensi pengujian akhir berjalan secara berkesinambungan:")
