@@ -21,6 +21,14 @@ def add_paragraphs(doc, text_list):
     for t in text_list:
         add_p(doc, t)
 
+def safe_copy(src, dst):
+    """Menyalin file dengan penanganan aman jika file sedang dibuka di Microsoft Word."""
+    try:
+        shutil.copy(src, dst)
+        print(f"Salinan root diperbarui: {dst}")
+    except PermissionError:
+        print(f"[CATATAN] File '{dst}' sedang dibuka di Word (terkunci). Versi terbaru telah berhasil disimpan di '{src}'.")
+
 
 # ==============================================================================
 # 1. 1_RGB_train.docx
@@ -82,6 +90,7 @@ def build_report_1():
     add_p(doc, "Sebelum memulai pemodelan, visualisasi eksploratif dilakukan terhadap sampel citra mentah untuk memvalidasi representasi visual dan struktur label. Pemeriksaan terhadap sampel visual mengonfirmasi bahwa setiap citra memiliki 3 saluran warna yang kaya akan informasi kromatisitas, reflektansi cahaya, dan saturasi objek alami.")
     add_p(doc, "Distribusi frekuensi label pada 50.000 citra pelatihan dianalisis secara statistik. Hasil visualisasi membuktikan bahwa dataset memiliki distribusi kelas yang seragam sempurna (balanced dataset), di mana setiap kategori diwakili oleh tepat 5.000 sampel (10.00% per kelas). Keseimbangan ini memastikan bahwa pengoptimalan loss fungsi tidak akan terdistorsi oleh bias kelas mayoritas.")
     add_p(doc, "Inspeksi visual juga memperlihatkan bahwa kelas kendaraan cenderung memiliki latar belakang bertekstur teratur (seperti aspal jalan raya atau permukaan air laut), sementara kelas hewan memiliki latar belakang yang dinamis (seperti rumput, tanah, atau vegetasi lebat).")
+    add_figure(doc, "report_images/1_RGB_train_c3_img1.png", "Gambar 1. Visualisasi Sampel Citra Dataset CIFAR-10 pada Domain RGB (3 Kanal Warna)")
 
     add_h1(doc, "6. Pre-processing Data")
     add_p(doc, "Tahapan prapemrosesan data dirancang secara sistematis untuk menstabilkan konvergensi gradien selama pelatihan jaringan konvolusi:")
@@ -121,9 +130,9 @@ def build_report_1():
     add_p(doc, "Kecilnya selisih antara akurasi training dan validasi (gap kurang dari 5%) membuktikan bahwa integrasi Batch Normalization, Spatial Dropout, dan augmentasi data berhasil menekan overfitting secara luar biasa.")
 
     add_h1(doc, "11. Visualisasi Training")
-    add_p(doc, "Dinamika pelatihan divisualisasikan melalui kurva pergerakan loss dan akurasi per epoch, sebagaimana disajikan pada Gambar 1:")
-    add_figure(doc, "report_images/1_RGB_train_c10_img1.png", "Gambar 1. Kurva Loss dan Accuracy Pelatihan Custom CNN pada Domain RGB (Epoch 1–40)")
-    add_p(doc, "Kurva pada Gambar 1 memperlihatkan karakteristik pelatihan yang sangat sehat:")
+    add_p(doc, "Dinamika pelatihan divisualisasikan melalui kurva pergerakan loss dan akurasi per epoch, sebagaimana disajikan pada Gambar 2:")
+    add_figure(doc, "report_images/1_RGB_train_c11_img2.png", "Gambar 2. Kurva Loss dan Accuracy Pelatihan Custom CNN pada Domain RGB (Epoch 1–40)")
+    add_p(doc, "Kurva pada Gambar 2 memperlihatkan karakteristik pelatihan yang sangat sehat:")
     add_bullet(doc, "Kurva training loss dan validation loss menurun secara monoton dan saling berdekatan hingga epoch ke-25, mengindikasikan pembelajaran representasi yang stabil.", "Penurunan Loss Konsisten: ")
     add_bullet(doc, "Kurva akurasi validasi bergerak naik secara konsisten melampaui 90% pada epoch ke-18 dan stabil pada rentang 92.2% - 92.4% hingga akhir pelatihan.", "Konvergensi Akurasi Cepat: ")
     add_bullet(doc, "Tidak tampak gejala divergensi tajam pada kurva validasi, menandakan bahwa regularisasi residual block bekerja optimal.", "Ketiadaan Overfitting Parah: ")
@@ -166,7 +175,7 @@ def build_report_1():
 
     out_path = os.path.join(OUTPUT_DIR, "1_RGB_train.docx")
     doc.save(out_path)
-    shutil.copy(out_path, "1_RGB_train.docx")
+    safe_copy(out_path, "1_RGB_train.docx")
     print(f"Selesai: {out_path} ({os.path.getsize(out_path)} bytes)")
 
 
@@ -327,7 +336,7 @@ def build_report_2():
 
     out_path = os.path.join(OUTPUT_DIR, "2_RGB_test.docx")
     doc.save(out_path)
-    shutil.copy(out_path, "2_RGB_test.docx")
+    safe_copy(out_path, "2_RGB_test.docx")
     print(f"Selesai: {out_path} ({os.path.getsize(out_path)} bytes)")
 
 
@@ -396,6 +405,7 @@ def build_report_3():
     add_p(doc, "Citra hasil transformasi menampilkan gradasi abu-abu yang halus, namun pada beberapa sampel citra dengan latar belakang berwarna warni, pemisahan antara objek dan latar belakang tampak memudar akibat bobot rata-rata yang meratakan kontras.")
     add_p(doc, "Histogram nilai piksel terdistribusi merata di rentang intensitas [0, 255], memvalidasi bahwa konversi aritmatika tidak menyebabkan pemotongan (clipping) nilai piksel ekstrem.")
     add_p(doc, "Inspeksi visual menegaskan bahwa bentuk geometris kendaraan (seperti siluet mobil dan sayap pesawat) tetap terdefinisi dengan sangat baik, sedangkan tekstur organik hewan tampak lebih datar.")
+    add_figure(doc, "report_images/3_GrayAvg_train_c3_img1.png", "Gambar 1. Visualisasi Sampel Citra Dataset CIFAR-10 pada Domain Grayscale Average (R+G+B)/3")
 
     add_h1(doc, "6. Pre-processing Data")
     add_p(doc, "Prapemrosesan data mencakup transformasi monokromatik dan normalisasi numerik:")
@@ -435,9 +445,9 @@ def build_report_3():
     add_p(doc, "Gap antara akurasi training dan validasi terjaga di bawah 5%, menandakan efektivitas teknik regularisasi Batch Normalization dan Spatial Dropout.")
 
     add_h1(doc, "11. Visualisasi Training")
-    add_p(doc, "Kurva pergerakan loss dan akurasi per epoch disajikan pada Gambar 1:")
-    add_figure(doc, "report_images/3_GrayAvg_train_c10_img1.png", "Gambar 1. Kurva Loss dan Accuracy Pelatihan Custom CNN pada Domain Grayscale Average")
-    add_p(doc, "Kurva pada Gambar 1 memperlihatkan karakteristik konvergensi yang mulus:")
+    add_p(doc, "Kurva pergerakan loss dan akurasi per epoch disajikan pada Gambar 2:")
+    add_figure(doc, "report_images/3_GrayAvg_train_c9_img2.png", "Gambar 2. Kurva Loss dan Accuracy Pelatihan Custom CNN pada Domain Grayscale Average (Epoch 1–40)")
+    add_p(doc, "Kurva pada Gambar 2 memperlihatkan karakteristik konvergensi yang mulus:")
     add_bullet(doc, "Loss validasi menurun secara teratur dari 1.9120 ke 0.3621 tanpa fluktuasi liar.", "Stabilitas Loss: ")
     add_bullet(doc, "Akurasi validasi menembus batas 90% pada epoch ke-26 dan stabil hingga akhir pelatihan.", "Konvergensi Akurasi: ")
     add_bullet(doc, "Gap antara kurva train dan val tetap terjaga di bawah 5%, mengonfirmasi ketiadaan overfitting.", "Generalisasi Sehat: ")
@@ -483,7 +493,7 @@ def build_report_3():
 
     out_path = os.path.join(OUTPUT_DIR, "3_GrayAvg_train.docx")
     doc.save(out_path)
-    shutil.copy(out_path, "3_GrayAvg_train.docx")
+    safe_copy(out_path, "3_GrayAvg_train.docx")
     print(f"Selesai: {out_path} ({os.path.getsize(out_path)} bytes)")
 
 
@@ -644,7 +654,7 @@ def build_report_4():
 
     out_path = os.path.join(OUTPUT_DIR, "4_GrayAvg_test.docx")
     doc.save(out_path)
-    shutil.copy(out_path, "4_GrayAvg_test.docx")
+    safe_copy(out_path, "4_GrayAvg_test.docx")
     print(f"Selesai: {out_path} ({os.path.getsize(out_path)} bytes)")
 
 
@@ -713,6 +723,7 @@ def build_report_5():
     add_p(doc, "Histogram intensitas piksel memperlihatkan rentang dinamis yang lebih lebar pada area mid-tone berkat pembobotan 58.7% pada spektrum hijau.")
     add_p(doc, "Tekstur bulu pada kelas hewan seperti kucing, anjing, dan kuda mempertahankan kontras lokal yang lebih jelas, yang diproyeksikan akan membantu pembentukan filter konvolusi tingkat tinggi.")
     add_p(doc, "Distribusi nilai piksel terkonfirmasi berada dalam rentang [0, 255] tanpa saturasi abnormal.")
+    add_figure(doc, "report_images/5_GrayNTSC_train_c3_img1.png", "Gambar 1. Visualisasi Sampel Citra Dataset CIFAR-10 pada Domain Grayscale NTSC (ITU-R BT.601)")
 
     add_h1(doc, "6. Pre-processing Data")
     add_p(doc, "Prapemrosesan data mencakup transformasi luminansi dan normalisasi numerik:")
@@ -749,9 +760,9 @@ def build_report_5():
     add_p(doc, "Regularisasi residual dan Spatial Dropout berhasil mencegah terjadinya overfitting yang berlebihan.")
 
     add_h1(doc, "11. Visualisasi Training")
-    add_p(doc, "Dinamika pelatihan divisualisasikan melalui kurva loss dan akurasi pada Gambar 1:")
-    add_figure(doc, "report_images/5_GrayNTSC_train_c10_img1.png", "Gambar 1. Kurva Loss dan Accuracy Pelatihan Custom CNN pada Domain Grayscale NTSC BT.601")
-    add_p(doc, "Kurva pada Gambar 1 memperlihatkan karakteristik pembelajaran yang sangat sehat dengan laju penurunan loss yang mulus dan ketiadaan gejala overfitting.")
+    add_p(doc, "Dinamika pelatihan divisualisasikan melalui kurva loss dan akurasi pada Gambar 2:")
+    add_figure(doc, "report_images/5_GrayNTSC_train_c9_img2.png", "Gambar 2. Kurva Loss dan Accuracy Pelatihan Custom CNN pada Domain Grayscale NTSC BT.601 (Epoch 1–40)")
+    add_p(doc, "Kurva pada Gambar 2 memperlihatkan karakteristik pembelajaran yang sangat sehat dengan laju penurunan loss yang mulus dan ketiadaan gejala overfitting.")
     add_p(doc, "Kurva akurasi validasi bergerak stabil di atas 91% pada sepertiga akhir pelatihan.")
 
     add_h1(doc, "12. Feature Extraction")
@@ -794,7 +805,7 @@ def build_report_5():
 
     out_path = os.path.join(OUTPUT_DIR, "5_GrayNTSC_train.docx")
     doc.save(out_path)
-    shutil.copy(out_path, "5_GrayNTSC_train.docx")
+    safe_copy(out_path, "5_GrayNTSC_train.docx")
     print(f"Selesai: {out_path} ({os.path.getsize(out_path)} bytes)")
 
 
@@ -955,7 +966,7 @@ def build_report_6():
 
     out_path = os.path.join(OUTPUT_DIR, "6_GrayNTSC_test.docx")
     doc.save(out_path)
-    shutil.copy(out_path, "6_GrayNTSC_test.docx")
+    safe_copy(out_path, "6_GrayNTSC_test.docx")
     print(f"Selesai: {out_path} ({os.path.getsize(out_path)} bytes)")
 
 
@@ -1035,7 +1046,7 @@ def build_report_7():
 
     add_h1(doc, "7. Diagram Arsitektur Feature Engineering Multidomain")
     add_p(doc, "Alur komputasi Feature Engineering Multi-Domain divisualisasikan pada diagram arsitektur Gambar 1:")
-    add_figure(doc, "report_images/7_Fusion_train_c7_img1.png", "Gambar 1. Diagram Alir Arsitektur Feature Engineering Multi-Domain Concatenative Fusion (1.536-D)")
+    add_figure(doc, "report_images/7_Fusion_train_arch.png", "Gambar 1. Diagram Alir Arsitektur Feature Engineering Multi-Domain Concatenative Fusion (1.536-D)")
     add_p(doc, "Diagram pada Gambar 1 mengilustrasikan alur pemrosesan dari citra input melalui 3 backbone Custom CNN independen, ekstraksi fitur GAP, penyatuan konkatenasi 1.536-D, normalisasi Mode D+L2, hingga klasifikasi akhir oleh SVM.")
     add_p(doc, "Struktur pipeline tri-branch ini menjamin pemisahan komputasi yang modular dan skalabel.")
 
@@ -1077,7 +1088,7 @@ def build_report_7():
 
     out_path = os.path.join(OUTPUT_DIR, "7_Fusion_train.docx")
     doc.save(out_path)
-    shutil.copy(out_path, "7_Fusion_train.docx")
+    safe_copy(out_path, "7_Fusion_train.docx")
     print(f"Selesai: {out_path} ({os.path.getsize(out_path)} bytes)")
 
 
@@ -1166,7 +1177,7 @@ def build_report_8():
 
     add_h1(doc, "6. Confusion Matrix")
     add_p(doc, "Sebaran prediksi akhir divisualisasikan pada matriks konfusi Gambar 1:")
-    add_figure(doc, "report_images/8_Fusion_test_c6_img1.png", "Gambar 1. Confusion Matrix Akhir SVM Fitur Fusi 1.536-D pada 10.000 Test Set Resmi CIFAR-10 (Akurasi 95.14%)")
+    add_figure(doc, "report_images/8_Fusion_test_c5_img1.png", "Gambar 1. Confusion Matrix Akhir SVM Fitur Fusi 1.536-D pada 10.000 Test Set Resmi CIFAR-10 (Akurasi 95.14%)")
     add_p(doc, "Matriks konfusi pada Gambar 1 memperlihatkan konsentrasi nilai diagonal yang sangat dominan di seluruh 10 kelas objek. Kesalahan klasifikasi antara kucing dan anjing berhasil ditekan hingga ke tingkat minimal (misklasifikasi kucing ke anjing berkurang dari 80 citra pada baseline menjadi hanya 38 citra pada model fusi).")
     add_p(doc, "Penebalan diagonal utama yang merata menegaskan bahwa model fusi memiliki ketahanan klasifikasi yang seimbang tanpa ada kelas yang tertinggal.")
 
@@ -1205,7 +1216,7 @@ def build_report_8():
 
     out_path = os.path.join(OUTPUT_DIR, "8_Fusion_test.docx")
     doc.save(out_path)
-    shutil.copy(out_path, "8_Fusion_test.docx")
+    safe_copy(out_path, "8_Fusion_test.docx")
     print(f"Selesai: {out_path} ({os.path.getsize(out_path)} bytes)")
 
 

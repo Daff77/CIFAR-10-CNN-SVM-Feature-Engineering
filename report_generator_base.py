@@ -417,6 +417,7 @@ def add_table_data(doc, headers, rows_data, col_widths=None):
 def add_figure(doc, img_path, caption_text, width=Inches(5.6)):
     """Menyisipkan gambar dan caption resmi dengan format Gambar X. [Deskripsi]."""
     if not os.path.exists(img_path):
+        print(f"[PERINGATAN GAGAL GAMBAR] File gambar TIDAK DITEMUKAN: {img_path}")
         return
     p_img = doc.add_paragraph()
     p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
