@@ -22,3 +22,8 @@ Tugas7_CIFAR10_18_Files/
 Thumbs.db
 .vscode/
 .idea/
+
+# Reports & Visual Assets (Kept locally)
+Laporan_CIFAR10/
+report_images/
+*.docx
